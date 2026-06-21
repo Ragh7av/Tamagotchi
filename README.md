@@ -8,7 +8,7 @@ A custom, pocket-sized virtual pet built with a XIAO ESP32C3, an OLED display, a
 
 <h1 align="center">Overview</h1>
         
-<p align="center">Luna is a DIY Tamagotchi that lives inside a tiny OLED screen. Powered by the incredibly compact XIAO ESP32C3 microcontroller, it features 4 tactile buttons and a rotary encoder to interact with your pet. You can feed it Luosifen, take it mountain climbing, let it nap, or play a wildcard minigame to keep its stats high!
+<p align="center">A DIY Tamagotchi that lives inside a tiny OLED screen. Powered by the incredibly compact XIAO ESP32C3 microcontroller, it features 4 tactile buttons and a rotary encoder to interact with your pet. You can feed it Luosifen, take it mountain climbing, let it nap, or play a wildcard minigame to keep its stats high!
 
 <h1 align="center">Why am I even building this?</h1>
 <p align="center">
