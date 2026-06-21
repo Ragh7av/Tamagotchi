@@ -1,4 +1,6 @@
- <h1 align="center">Luna Tamagotchi</h1>
+ <h1 align="center">Tamagotchi</h1>
+ <img width="1642" height="951" alt="Screenshot 2026-06-21 043140" src="https://github.com/user-attachments/assets/c41d5591-320c-42f1-a650-d778b82fd9f7" />
+
 <div align="center">         
 <p align="center">
 A custom, pocket-sized virtual pet built with a XIAO ESP32C3, an OLED display, and a 3D-printed enclosure.
@@ -58,14 +60,10 @@ A custom, pocket-sized virtual pet built with a XIAO ESP32C3, an OLED display, a
 | 3D PRINTS | [Dwart Industries](https://dwartindustries.com/shop/additive-manufacturing/fdm-3d-printing-services/) | ₹411 |
 | **Subtotal** | | **₹2165** |
 
-# Wiring / Schematic
+#  Schematic
+<img width="2032" height="1242" alt="Screenshot 2026-06-21 122848" src="https://github.com/user-attachments/assets/66084597-d61b-45fa-939b-7a57bd0637e6" />
 
-* **OLED Display**: Connects via I2C to the XIAO ESP32C3 (SDA -> Pin 22 / SCL -> Pin 23).
-* **Buttons**: 4 buttons connected to designated input pins (Pins 0, 1, 2, 21), configured with `INPUT_PULLUP`.
-* **Buzzer**: Connected to Pin 18 (D10) for audio feedback during actions.
-* **Rotary Encoder**: Clock (CLK/A) on Pin 20 and Data (DT/B) on Pin 19.
 
-*(Check the `IMAGES` folder in the repository for the full Zine and screenshots.)*
 
 # How to Build it?
 
