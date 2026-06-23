@@ -1,3 +1,6 @@
+https://cad.onshape.com/documents/aaa376a98daf92ea29d656f5/w/34884ae89482b25306f22cdd/e/82753004b14a47683b19c43f?renderMode=0&uiState=6a3ace564e6c75de72ba1469
+ 
+ 
  <h1 align="center">Tamagotchi</h1>
  <img width="1642" height="951" alt="Screenshot 2026-06-21 043140" src="https://github.com/user-attachments/assets/c41d5591-320c-42f1-a650-d778b82fd9f7" />
 
