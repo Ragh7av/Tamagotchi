@@ -1,4 +1,4 @@
-https://cad.onshape.com/documents/aaa376a98daf92ea29d656f5/w/34884ae89482b25306f22cdd/e/82753004b14a47683b19c43f?renderMode=0&uiState=6a3ace564e6c75de72ba1469
+
  
  
  <h1 align="center">Tamagotchi</h1>
@@ -87,3 +87,4 @@ A custom, pocket-sized virtual pet built with a XIAO ESP32C3, an OLED display, a
  
 <h1>Inspirations & Credits</h1> 
 Huge thanks to the <strong>Fallout Hack Club Tamagotchi guide</strong> for the base inspiration and logic outline.
+https://cad.onshape.com/documents/aaa376a98daf92ea29d656f5/w/34884ae89482b25306f22cdd/e/82753004b14a47683b19c43f?renderMode=0&uiState=6a3ace564e6c75de72ba1469
