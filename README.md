@@ -2,33 +2,55 @@
  
  
  <h1 align="center">Tamagotchi</h1>
- <img width="1642" height="951" alt="Screenshot 2026-06-21 043140" src="https://github.com/user-attachments/assets/c41d5591-320c-42f1-a650-d778b82fd9f7" />
+ <img width="1175" height="648" alt="Screenshot 2026-06-23 235815" src="https://github.com/user-attachments/assets/d0b50554-49d4-47b8-b4b8-e9aa9b47dddf" />
+
 
 <div align="center">         
 <p align="center">
-A custom, pocket-sized virtual pet built with a XIAO ESP32C3, an OLED display, and a 3D-printed enclosure.
+Super smol tamagotchi pet for you!
 </p>
 
 <h1 align="center">Overview</h1>
         
-<p align="center">A DIY Tamagotchi that lives inside a tiny OLED screen. Powered by the incredibly compact XIAO ESP32C3 microcontroller, it features 4 tactile buttons and a rotary encoder to interact with your pet. You can feed it Luosifen, take it mountain climbing, let it nap, or play a wildcard minigame to keep its stats high!
-
-<h1 align="center">Why am I even building this?</h1>
 <p align="center">
- This project was inspired by classic virtual pets and serves as an awesome way to learn about simple game loops, I2C displays, debouncing buttons, and generating graphics in C++. A huge shoutout and <strong>credit to Hack Club Fallout's Tamagotchi guide</strong> for providing the inspiration and foundation for this build!
+ 
+ Custom tamagotchi with a super small formfactor and can help you [larp](https://en.wiktionary.org/wiki/LARP) building hardware. Made using the good old ESP32 C3 Supermini, an 0.96 oled panel, three [smol](https://en.wiktionary.org/wiki/smol) tactile switches, buzzer, and a battery [ofc](https://en.wikipedia.org/wiki/OFC) with a custom PCB and a 3D printed case!
+
+ #  Schematic
+<img width="1209" height="772" alt="Screenshot 2026-06-22 183809" src="https://github.com/user-attachments/assets/02815ffc-1aa8-4366-a8eb-51954e0f9ee3" />
+
+
+# Printed Circuit Board (PCB)
+<img width="938" height="1119" alt="Screenshot 2026-06-25 175817" src="https://github.com/user-attachments/assets/89f8a3b3-8824-4689-90b8-ac6bcd631b77" />
+<img width="765" height="1226" alt="Screenshot 2026-06-23 164353" src="https://github.com/user-attachments/assets/5531e6e4-834f-4e68-bdf5-7c9793a11cb0" />
+
+# 3D MODEL OF ASSEMBLY
+<img width="1175" height="648" alt="Screenshot 2026-06-23 235815" src="https://github.com/user-attachments/assets/8c2e6c43-a40e-44c3-98a0-bffa34876ad0" />
+<img width="1155" height="748" alt="Screenshot 2026-06-23 235724" src="https://github.com/user-attachments/assets/12c7a8a6-53df-46d8-b238-f051e6bc723e" />
+<img width="1192" height="1034" alt="Screenshot 2026-06-23 234828" src="https://github.com/user-attachments/assets/d846138c-035a-4c91-a216-5f8685018b35" />
+<img width="1157" height="751" alt="Screenshot 2026-06-23 235446" src="https://github.com/user-attachments/assets/beb4017c-5b29-4b6a-a178-0c389ba30161" />
+
+# ZINE
+
+<img width="972" height="1498" alt="Zine-Tamagotchi" src="https://github.com/user-attachments/assets/88dae22f-f768-49cf-9d26-f4c5064aa491" />
+
+
+<h1 align="center">Why did I even build this?</h1>
+<p align="center">
+ 
+ to [larp](https://en.wiktionary.org/wiki/LARP) as a super smol cyberpet is cool [asf](https://en.wikipedia.org/wiki/Autism_Science_Foundation). 
+ 
  </p>
 
 <h1 align="center">The Features</h1>
 </div>
 
-1. **Virtual Pet Ecosystem**: Monitor four core stats—Hunger, Happiness, Energy, and Intelligence. If any stat drops too low, your pet gets sad!
-2. **Interactive Activities**: 
-   - **Feed (Luosifen)**: Restores hunger and gives a little energy.
-   - **Play (Climb Mountain)**: Boosts happiness but drains energy.
-   - **Sleep (Nap)**: Heavily restores energy and boosts intelligence.
-3. **Wildcard Minigame**: Use the rotary encoder to guess a random number between 0 and 20. Guess correctly (or within 1 number) and happiness is doubled! Fail, and happiness decreases by 15%.
-4. **Dynamic OLED Graphics**: Features custom bitmap sprites that change expressions (Happy, Neutral, Sad) based on the pet's current state.
 
+**Feeding:** Instantly fills the hunger meter and plays a quick "crunch" sound.
+
+**Playing:** Pauses the normal world to launch the falling-item arcade game. Catching items makes the pet happy but acts as a 20% battery tax on its energy.
+
+**Sleeping:** Dims the screen into a snooze mode, locking the controls until its energy battery safely recharges back to 100%.
 <div align="center">   
  
 # Repository Contents
@@ -38,35 +60,22 @@ A custom, pocket-sized virtual pet built with a XIAO ESP32C3, an OLED display, a
 | `BOM` | Bill of materials details and cost breakdowns |
 | `FIRMWARE` | The main Arduino C++ code (`firmware.ino`) handling the game loop and display graphics |
 | `IMAGES` | Zine scans, screenshots, and visual documentation |
+| `IMAGES` | Zine scans, screenshots, and visual documentation |
+| `IMAGES` | Zine scans, screenshots, and visual documentation |
+| `IMAGES` | Zine scans, screenshots, and visual documentation |
+| `IMAGES` | Zine scans, screenshots, and visual documentation |
 
 </div>
 
 # The Components Used
 
-1. Seeed Studio XIAO ESP32C3
-2. 0.96-inch OLED Display (I2C Interface, SSD1306)
-3. 5V Active Electromagnetic Buzzer
-4. 12mm x 12mm Tactile Switches (x4)
-5. Rotary Encoder (KY-040 or similar)
-6. Custom PCB
-7. Custom 3D Printed Case
-
-# Bill of Materials
-
-| Component Name | Link | Total Cost (₹) |
-| --- | --- | --- |
-| XIAO ESP 32 C3 | [Seeed Studio](https://www.seeedstudio.com/Seeed-XIAO-ESP32C3-p-5431.html) | ₹650 |
-| 0.96 OLED DISPLAY | [Quartz Components](https://quartzcomponents.com/products/oled-display-0-96-inch-i2c-interface-4-pin-blue-ssd1306) | ₹138 |
-| BUZZER | [Robu.in](https://robu.in/product/5v-active-electromagnetic-buzzer-pack-of-5/) | ₹16 |
-| 12MM*12MM TACTILE SWITCHES | [Robu.in](https://robu.in/product/tsf001b12018a-bzcn-12mm-12mm-50ma-round-button-direct-insert-12mm-180gf-12v-plugin-tactile-switches-rohs/) | ₹5 |
-| Custom PCB | [JLCPCB](https://cart.jlcpcb.com/) | ₹945 |
-| 3D PRINTS | [Dwart Industries](https://dwartindustries.com/shop/additive-manufacturing/fdm-3d-printing-services/) | ₹411 |
-| **Subtotal** | | **₹2165** |
-
-#  Schematic
-<img width="2032" height="1242" alt="Screenshot 2026-06-21 122848" src="https://github.com/user-attachments/assets/66084597-d61b-45fa-939b-7a57bd0637e6" />
-
-
+1. ESP32 C3 supermini
+2. 0.96-inch OLED Display (SSD1306)
+3. smol Buzzer
+4. 6mm x 6mm x 8mm Tactile Switches (x3)
+5. Battery
+7. Custom PCB
+8. Custom 3D Printed Case
 
 # How to Build it?
 
