@@ -14,7 +14,10 @@ Super smol tamagotchi pet for you!
         
 <p align="center">
  
- Custom tamagotchi with a super small formfactor and can help you [larp](https://en.wiktionary.org/wiki/LARP) building hardware. Made using the good old ESP32 C3 Supermini, an 0.96 oled panel, three [smol](https://en.wiktionary.org/wiki/smol) tactile switches, buzzer, and a battery [ofc](https://en.wikipedia.org/wiki/OFC) with a custom PCB and a 3D printed case!
+ Custom tamagotchi with a super small formfactor and can help you [larp](https://en.wiktionary.org/wiki/LARP) building hardware. Made using the good old ESP32 C3 Supermini, an 0.96 oled panel, three [smol](https://en.wiktionary.org/wiki/smol) tactile switches, buzzer, and a battery [ofc](https://en.wikipedia.org/wiki/OFC) with a custom PCB and a 3D printed case! 
+
+ [Onshape 3D Model link](https://cad.onshape.com/documents/aaa376a98daf92ea29d656f5/w/34884ae89482b25306f22cdd/e/82753004b14a47683b19c43f)
+
 
  #  Schematic
 <img width="1209" height="772" alt="Screenshot 2026-06-22 183809" src="https://github.com/user-attachments/assets/02815ffc-1aa8-4366-a8eb-51954e0f9ee3" />
