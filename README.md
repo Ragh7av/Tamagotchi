@@ -51,21 +51,6 @@ Super smol tamagotchi pet for you!
 **Playing:** Pauses the normal world to launch the falling-item arcade game. Catching items makes the pet happy but acts as a 20% battery tax on its energy.
 
 **Sleeping:** Dims the screen into a snooze mode, locking the controls until its energy battery safely recharges back to 100%.
-<div align="center">   
- 
-# Repository Contents
-
-| Path | What it contains |
-| --- | --- |
-| `BOM` | Bill of materials details and cost breakdowns |
-| `FIRMWARE` | The main Arduino C++ code (`firmware.ino`) handling the game loop and display graphics |
-| `IMAGES` | Zine scans, screenshots, and visual documentation |
-| `IMAGES` | Zine scans, screenshots, and visual documentation |
-| `IMAGES` | Zine scans, screenshots, and visual documentation |
-| `IMAGES` | Zine scans, screenshots, and visual documentation |
-| `IMAGES` | Zine scans, screenshots, and visual documentation |
-
-</div>
 
 # The Components Used
 
