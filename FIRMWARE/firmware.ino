@@ -1,383 +1,285 @@
-/*
-summary of game logic:
-plan for the different components
-button:
-1. Feed luosifen = feed (hunger)
-2. Climb mountain = play (happiness, and decrease energy)
-3. Nap = sleep (energy increased, intelligence increased by 1)
-4. study = NEW ONE (increase intelligence by 10)
-
-also a new stat called intelligence
-
-for the rotary encoder - after a random amount of time on the main screen, say 5 seconds, can be taken to a wild card,
-where a random number is calculated from 1 to 20, if they get the number (they can select it using the buttons)
-- if they get the number, the number bellow, the number or the number above then the score is doubled!
-- otherwise the score is decreased by 15% (*0.85)
-
-
-*/
-
-// buttons
-#define BTN1 0
-#define BTN2 1
-#define BTN3 2
-#define BTN4 21
-
-//OLED display
-#define SDA_PIN 22
-#define SCL_PIN 23
-
-// buzzer
-#define BZR 18
-
-// rotary encoder
-#define RE_A 20
-#define RE_B 19
-
-// includes, and setting up other stuff
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
-#define OLED_RESET -1
+#define OLED_RESET    -1
+#define SCREEN_ADDRESS 0x3C
+
+// Pin layout directly mapping image_2026-06-25_181045654.png
+#define PIN_BTN_LEFT   0  // SW4
+#define PIN_BTN_SELECT 1  // SW5
+#define PIN_BTN_RIGHT  2  // SW6
+#define PIN_BUZZER     3  // BZ1
+#define I2C_SDA        9  // U2 SDA
+#define I2C_SCL        8  // U2 SCL
+
+// Core Stats
+int hunger = 60;       
+int happiness = 50;    
+int energy = 100;      // New Energy Stat (0-100)
+
+// State Machine
+int selectedMenu = 0;  // 0 = FEED, 1 = PLAY, 2 = SLEEP
+bool showStatus = false;
+bool isSleeping = false;
+bool inGame = false;
+
+// Mini-Game Variables
+int paddleX = 54;
+int itemX = 30;
+int itemY = 12;
+int gameScore = 0;
+int itemsDropped = 0;
+
+unsigned long lastStatTick = 0;
+const unsigned long TICK_INTERVAL = 6000; // Stat updates every 6 seconds
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
-#define BTN_LEFT D0    // EAT LUOSIFEN
-#define BTN_MIDDLE D1  // CLIMB A MOUNTAIN
-#define BTN_RIGHT D2   // NAP
-#define BTN_DOWN D3    // STUDY
-
-#define BUZZER_PIN D10
-
-// im not sure if this is correct, but did the same for buttons, so probably the same.
-#define RotaryEncoderA D9
-#define RotaryEncoderB D8
-
-struct Pet {
-  int hunger;         // 0 to 100 (0 = starving, 100 = full)
-  int happiness;      // 0 to 100 (0 = miserable, 100 = ecstatic)
-  int energy;         // 0 to 100 (0 = exhausted, 100 = fully rested)
-  unsigned long age;  // total seconds the pet has been alive
-  int intelligence;   // 0 to 100 (0 = dumb, 100 = mega brain)
-};
-
-// globals
-
-Pet pet{};
-
-int prev_CLK_state;  // checking if has changed, when using the rotary encoder
-int count;           // measured of the rotary encoder. 1-20 (360 degrees and 18 degree increments)
-int lastValue{};
-
-enum Screen {
-  SCREEN_MAIN,
-  SCREEN_FEED,     // eat luosifen
-  SCREEN_PLAY,     // climb mountain
-  SCREEN_SLEEP,    // nap
-  SCREEN_STUDY,    // study
-  SCREEN_WILDCARD  // pick a random number between 1 and 4 if right .... (this is done if the user stays on the main screen for 10 seconds)
-};
-
-Screen currentScreen = SCREEN_MAIN;
+void playBeep(int frequency, int duration) {
+  long delayVal = 1000000 / frequency / 2;
+  long numCycles = (long)frequency * duration / 1000;
+  for (long i = 0; i < numCycles; i++) {
+    digitalWrite(PIN_BUZZER, HIGH);
+    delayMicroseconds(delayVal);
+    digitalWrite(PIN_BUZZER, LOW);
+    delayMicroseconds(delayVal);
+  }
+}
 
 void setup() {
-  pinMode(BTN_LEFT, INPUT_PULLUP);
-  pinMode(BTN_MIDDLE, INPUT_PULLUP);
-  pinMode(BTN_RIGHT, INPUT_PULLUP);
-  pinMode(BTN_DOWN, INPUT_PULLUP);
+  pinMode(PIN_BTN_LEFT, INPUT_PULLUP);
+  pinMode(PIN_BTN_SELECT, INPUT_PULLUP);
+  pinMode(PIN_BTN_RIGHT, INPUT_PULLUP);
+  pinMode(PIN_BUZZER, OUTPUT);
+  digitalWrite(PIN_BUZZER, LOW);
 
-  pinMode(BUZZER_PIN, OUTPUT);
-
-  // TODO: also do for the rotary encoder, but probably wont be the same, do some research....
-  pinMode(RotaryEncoderA, INPUT);  // seems like these dont need a pullup, but idk...
-  pinMode(RotaryEncoderB, INPUT);
-
-  prev_CLK_state = digitalRead(RotaryEncoderA);
-
-  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
+  Wire.begin(I2C_SDA, I2C_SCL);
+  display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
+  
   display.clearDisplay();
   display.setTextSize(1);
   display.setTextColor(SSD1306_WHITE);
-  display.setCursor(0, 0);
-  display.println("LUNA Init...");
+  display.setCursor(35, 28);
+  display.print("PET OS v2.0");
   display.display();
   delay(1000);
-
-  pet.hunger = 80;
-  pet.happiness = 80;
-  pet.energy = 80;
-  pet.age = 0;
-}
-
-unsigned long lastUpdate = 0;
-
-void updatePet() {
-  if (millis() - lastUpdate > 5000) {  // every 5 seconds
-    pet.hunger--;
-    pet.happiness--;
-    pet.energy--;
-
-    if (pet.hunger < 0) pet.hunger = 0;
-    if (pet.happiness < 0) pet.happiness = 0;
-    if (pet.energy < 0) pet.energy = 0;
-
-    pet.age += 5;
-    lastUpdate = millis();
-  }
-}
-
-unsigned long lastButtonPress = 0;
-
-void checkButtons() {
-  if (millis() - lastButtonPress < 200) return;  // debounce: ignore presses within 200ms
-
-  if (digitalRead(BTN_LEFT) == LOW) {
-    currentScreen = SCREEN_FEED;
-    tone(BUZZER_PIN, 1000, 50);
-    lastButtonPress = millis();
-  } else if (digitalRead(BTN_MIDDLE) == LOW) {
-    currentScreen = SCREEN_PLAY;
-    tone(BUZZER_PIN, 1200, 50);
-    lastButtonPress = millis();
-  } else if (digitalRead(BTN_RIGHT) == LOW) {
-    currentScreen = SCREEN_SLEEP;
-    tone(BUZZER_PIN, 800, 50);
-    lastButtonPress = millis();
-  } else if (digitalRead(BTN_DOWN) == LOW) {  //i.e. its clicked
-    currentScreen = SCREEN_WILDCARD;
-    tone(BUZZER_PIN, 1400, 75);
-    lastButtonPress = millis();
-  }
-}
-
-void handleScreenLogic() {
-  switch (currentScreen) {
-
-    case SCREEN_FEED:
-      pet.hunger += 10;
-      pet.energy += 5;
-      if (pet.energy > 100) pet.energy = 100;
-      if (pet.hunger > 100) pet.hunger = 100;
-      currentScreen = SCREEN_MAIN;
-      break;
-
-    case SCREEN_PLAY:
-      pet.happiness += 10;
-      pet.energy -= 5;
-      if (pet.happiness > 100) pet.happiness = 100;
-      if (pet.energy < 0) pet.energy = 0;
-      currentScreen = SCREEN_MAIN;
-      break;
-
-    case SCREEN_SLEEP:
-      pet.energy += 15;
-      pet.intelligence += 10;
-      if (pet.intelligence > 100) pet.intelligence = 100;
-      if (pet.energy > 100) pet.energy = 100;
-      currentScreen = SCREEN_MAIN;
-      break;
-
-    case SCREEN_WILDCARD:
-    {
-      // here we are going to check for the rotary encoder getting moved
-      // CLK = A
-      // DT = B
-
-      // to check if there has been any change.
-      lastValue = count;
-
-      auto currentStateCLK = digitalRead(RotaryEncoderA);
-
-      auto start = millis();
-
-      while (millis() - start < 3000) {
-        if (currentStateCLK != prev_CLK_state) {
-          // Read the state of DT to determine rotation direction
-          if (digitalRead(RotaryEncoderB) != currentStateCLK) {
-            if (count == 19) {
-              count = -1;  // which then gets incremented to 0.
-            }
-            count++;  // Clockwise rotation
-          } else {
-            if (count == 0) {
-              count = 20;  // which then gets decremented to 19.
-            }
-            count--;  // Counterclockwise rotation
-          }
-        }
-        prev_CLK_state = currentStateCLK;
-      }
-
-      // now we have got the count, we need to find a random number.
-      int num = int(random(0, 20));
-      // check if it is round about.
-      if (count == (num - 1) || count == (num) || count == (num + 1)) {
-        pet.happiness *= 2;
-        if (pet.happiness > 100) {
-          pet.happiness = 100;
-        }
-      } else {
-        // they didnt get it, decrease by 15%
-        pet.happiness = int(pet.happiness * 0.85);
-      }
-      currentScreen = SCREEN_MAIN;
-    }
-    break;
-
-    case SCREEN_MAIN:
-      break;  // do nothing, just display stats
-  }
-}
-
-const unsigned char PROGMEM petHappy[] = {
-  0b00000000, 0b00000000,
-  0b00000001, 0b11110000,
-  0b00000011, 0b00011000,
-  0b00000110, 0b00001000,
-  0b00001100, 0b00001000,
-  0b00011001, 0b00100100,
-  0b00010000, 0b00000100,
-  0b00110000, 0b00000100,
-  0b00100010, 0b00100100,
-  0b00100011, 0b01100100,
-  0b00100011, 0b11000100,
-  0b00110000, 0b00001100,
-  0b00011000, 0b00001000,
-  0b00001100, 0b00011000,
-  0b00000111, 0b11110000,
-  0b00000000, 0b00000000
-};
-
-// Usage:
-// display.drawBitmap(x, y, sprite, 16, 16, SSD1306_WHITE);
-
-// Example: Sad face (any stat below 30)
-const unsigned char PROGMEM petSad[] = {
-  0b00000000, 0b00000000,
-  0b00000001, 0b11110000,
-  0b00000011, 0b00011000,
-  0b00000110, 0b00001000,
-  0b00001100, 0b00001000,
-  0b00011001, 0b00100100,
-  0b00010000, 0b00000100,
-  0b00110000, 0b00000100,
-  0b00100011, 0b11000100,
-  0b00100110, 0b01100100,
-  0b00100100, 0b00100100,
-  0b00110000, 0b00001100,
-  0b00011000, 0b00001000,
-  0b00001100, 0b00011000,
-  0b00000111, 0b11110000,
-  0b00000000, 0b00000000
-};
-
-// Usage:
-// display.drawBitmap(x, y, sprite, 16, 16, SSD1306_WHITE);
-
-const unsigned char PROGMEM petNeutral[] = {
-  0b00000000, 0b00000000,
-  0b00000001, 0b11110000,
-  0b00000011, 0b00011000,
-  0b00000110, 0b00001000,
-  0b00001100, 0b00001000,
-  0b00011001, 0b00100100,
-  0b00010000, 0b00000100,
-  0b00110000, 0b00000100,
-  0b00100000, 0b00000100,
-  0b00100111, 0b11100100,
-  0b00100000, 0b00000100,
-  0b00110000, 0b00001100,
-  0b00011000, 0b00001000,
-  0b00001100, 0b00011000,
-  0b00000111, 0b11110000,
-  0b00000000, 0b00000000
-};
-
-//pet sleep
-const unsigned char PROGMEM sprite[] = {
-  0b00000000, 0b00000000,
-  0b00000001, 0b11110000,
-  0b00000011, 0b00011000,
-  0b00000110, 0b00001000,
-  0b00001100, 0b00001000,
-  0b00011000, 0b00000100,
-  0b00010000, 0b00000100,
-  0b00110000, 0b00000100,
-  0b00100000, 0b00000100,
-  0b00100011, 0b11100100,
-  0b00100000, 0b00000100,
-  0b00110000, 0b00001100,
-  0b00011000, 0b00001000,
-  0b00001100, 0b00011000,
-  0b00000111, 0b11110000,
-  0b00000000, 0b00000000
-};
-
-// Usage:
-// display.drawBitmap(x, y, sprite, 16, 16, SSD1306_WHITE);
-
-void render() {
-  display.clearDisplay();
-
-  // Choose the right sprite based on pet stats
-  const unsigned char* sprite;
-  if (pet.hunger < 30 || pet.happiness < 30 || pet.energy < 30) {
-    sprite = petSad;
-  } else if (pet.hunger > 50 && pet.happiness > 50 && pet.energy > 50) {
-    sprite = petHappy;
-  } else {
-    sprite = petNeutral;
-  }
-
-  // Draw the pet sprite (centered horizontally, near the top)
-  display.drawBitmap(56, 2, sprite, 16, 16, SSD1306_WHITE);
-
-  // Draw stat bars below the pet
-  display.setTextSize(1);
-
-  display.setCursor(0, 24);
-  display.print("HUN ");
-  drawBar(24, 24, pet.hunger);
-
-  display.setCursor(0, 30);
-  display.print("HAP ");
-  drawBar(24, 30, pet.happiness);
-
-  display.setCursor(0, 36);
-  display.print("ENG ");
-  drawBar(24, 36, pet.energy);
-
-  display.setCursor(0, 42);
-  display.print("INTG ");
-  drawBar(24, 42, pet.intelligence);
-
-  // should we print out the age?
-  Serial.println(pet.age);  // just print it out to the console for now.
-
-  // Button labels at the bottom
-  display.setCursor(0, 56);
-  display.println("[LSF] [CLMB] [SJ] [WLDCRD]");
-
-  display.display();
-}
-
-// Draws a stat bar: empty rectangle with a filled portion based on value (0 to 100)
-void drawBar(int x, int y, int value) {
-  int barWidth = 100;
-  int barHeight = 6;
-  int fillWidth = map(value, 0, 100, 0, barWidth);
-
-  display.drawRect(x, y, barWidth, barHeight, SSD1306_WHITE);   // outline
-  display.fillRect(x, y, fillWidth, barHeight, SSD1306_WHITE);  // filled portion
+  
+  lastStatTick = millis();
 }
 
 void loop() {
-  checkButtons();       // 1. Read input
-  updatePet();          // 2. Update state over time
-  handleScreenLogic();  // 3. Process actions
-  render();             // 4. Display results
-  delay(100);           // 5. Short pause
+  // --- 1. Passive Background Stat Management ---
+  if (millis() - lastStatTick >= TICK_INTERVAL) {
+    lastStatTick = millis();
+    
+    if (isSleeping) {
+      energy += 15;
+      if (energy >= 100) {
+        energy = 100;
+        isSleeping = false; // Automatically wakes up fully charged
+        playBeep(1500, 400);
+      }
+    } else {
+      if (hunger > 0) hunger -= 3;
+      if (happiness > 0) happiness -= 3;
+      if (energy > 0) energy -= 2; // Slow active drain
+    }
+  }
+
+  // --- 2. Handle Inputs & States ---
+  if (inGame) {
+    runMiniGameLoop();
+  } else if (isSleeping) {
+    // Pressing any button wakes the pet early
+    if (digitalRead(PIN_BTN_LEFT) == LOW || digitalRead(PIN_BTN_SELECT) == LOW || digitalRead(PIN_BTN_RIGHT) == LOW) {
+      isSleeping = false;
+      playBeep(1000, 100);
+      delay(300);
+    }
+    drawSleepScreen();
+  } else {
+    handleStandardInput();
+    
+    display.clearDisplay();
+    if (showStatus) {
+      drawStatusScreen();
+    } else {
+      drawMainScreen();
+    }
+    display.display();
+  }
+  
+  delay(30); // Global frame limiter
+}
+
+// --- Standard UI Input Controller ---
+void handleStandardInput() {
+  if (digitalRead(PIN_BTN_LEFT) == LOW) {
+    selectedMenu = (selectedMenu + 1) % 3; // Loop between 0, 1, 2
+    playBeep(1800, 30);
+    delay(200); 
+  }
+
+  if (digitalRead(PIN_BTN_RIGHT) == LOW) {
+    showStatus = !showStatus; 
+    playBeep(1400, 40);
+    delay(200);
+  }
+
+  if (digitalRead(PIN_BTN_SELECT) == LOW) {
+    delay(200);
+    if (selectedMenu == 0) { // FEED
+      hunger = min(hunger + 20, 100);
+      playBeep(900, 80); delay(40); playBeep(700, 80);
+    } 
+    else if (selectedMenu == 1) { // PLAY
+      if (energy >= 20) {
+        // Init the Mini-game state
+        inGame = true;
+        gameScore = 0;
+        itemsDropped = 0;
+        paddleX = 54;
+        itemY = 12;
+        itemX = random(10, 110);
+        playBeep(1200, 100);
+      } else {
+        // Too tired warning!
+        playBeep(300, 300); 
+      }
+    } 
+    else if (selectedMenu == 2) { // SLEEP
+      isSleeping = true;
+      showStatus = false;
+      playBeep(600, 200); delay(50); playBeep(400, 300);
+    }
+  }
+}
+
+// --- Arcade Mini-Game Implementation ---
+void runMiniGameLoop() {
+  // Input tracking directly inside the game
+  if (digitalRead(PIN_BTN_LEFT) == LOW && paddleX > 0) {
+    paddleX -= 5;
+  }
+  if (digitalRead(PIN_BTN_RIGHT) == LOW && paddleX < 112) {
+    paddleX += 5;
+  }
+
+  // Drop object physics
+  itemY += 2;
+
+  // Collision handling (Paddle sits at Y=56)
+  if (itemY >= 54) {
+    if (itemX >= paddleX && itemX <= (paddleX + 16)) {
+      gameScore++;
+      playBeep(2200, 50); // High pitch catch indicator
+    } else {
+      playBeep(400, 80);  // Low pitch miss indicator
+    }
+    
+    // Spawn next object
+    itemY = 12;
+    itemX = random(5, 120);
+    itemsDropped++;
+  }
+
+  // Check End Game Condition (After 5 drops)
+  if (itemsDropped >= 5) {
+    inGame = false;
+    energy = max(energy - 20, 0); // Discharge tax for playing
+    happiness = min(happiness + (gameScore * 12), 100); // Reward calculations
+    
+    // Victory fanfare
+    playBeep(1500, 80); delay(50);
+    playBeep(2000, 150);
+    return;
+  }
+
+  // Render Mini Game Screen
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setCursor(0, 0);
+  display.print("Score:"); display.print(gameScore);
+  display.setCursor(85, 0);
+  display.print("Drop:"); display.print(itemsDropped + 1);
+  display.drawLine(0, 10, 128, 10, SSD1306_WHITE);
+
+  // Draw Catch Basket Paddle
+  display.fillRect(paddleX, 56, 16, 4, SSD1306_WHITE);
+  // Draw Falling Fruit/Object
+  display.fillCircle(itemX, itemY, 3, SSD1306_WHITE);
+  display.display();
+}
+
+// --- UI Display Render Panels ---
+void drawMainScreen() {
+  // Menu Options Rendering
+  display.drawRect(2, 2, 38, 13, SSD1306_WHITE);
+  display.drawRect(44, 2, 38, 13, SSD1306_WHITE);
+  display.drawRect(86, 2, 40, 13, SSD1306_WHITE);
+  
+  if (selectedMenu == 0) display.fillRect(2, 2, 38, 13, SSD1306_INVERSE);
+  if (selectedMenu == 1) display.fillRect(44, 2, 38, 13, SSD1306_INVERSE);
+  if (selectedMenu == 2) display.fillRect(86, 2, 40, 13, SSD1306_INVERSE);
+
+  display.setCursor(8, 5);   display.print("FEED");
+  display.setCursor(52, 5);  display.print("PLAY");
+  display.setCursor(92, 5);  display.print("SLEEP");
+
+  int bounce = (millis() % 800 < 400) ? 0 : 2;
+  display.drawRoundRect(48, 25 + bounce, 32, 26, 6, SSD1306_WHITE); // Body
+
+  if (energy < 20) {
+    // Exhausted/Dying Expression
+    display.setCursor(55, 32 + bounce); display.print("=");
+    display.setCursor(67, 32 + bounce); display.print("=");
+    display.drawLine(59, 44 + bounce, 67, 44 + bounce, SSD1306_WHITE);
+  } else {
+    // Normal Face
+    display.fillRect(55, 34 + bounce, 3, 3, SSD1306_WHITE);
+    display.fillRect(69, 34 + bounce, 3, 3, SSD1306_WHITE);
+    display.drawPixel(61, 42 + bounce, SSD1306_WHITE);
+    display.drawPixel(65, 42 + bounce, SSD1306_WHITE);
+  }
+}
+
+void drawSleepScreen() {
+  display.clearDisplay();
+  int pulse = (millis() % 2000 < 1000);
+  
+  // Snoozing animations
+  display.setCursor(85, 20 - (pulse * 3)); display.print(pulse ? "Zzz" : "zZz");
+  
+  // Closed eyes pet body representation
+  display.drawRoundRect(48, 30, 32, 26, 6, SSD1306_WHITE);
+  display.drawLine(54, 39, 58, 39, SSD1306_WHITE); // Closed Left Eye
+  display.drawLine(68, 39, 72, 39, SSD1306_WHITE); // Closed Right Eye
+  
+  display.setCursor(20, 3);
+  display.print("Recharging energy...");
+  display.display();
+}
+
+void drawStatusScreen() {
+  display.setCursor(32, 2);
+  display.print("PET VITALS");
+  display.drawLine(0, 12, 128, 12, SSD1306_WHITE);
+
+  // Hunger Meter
+  display.setCursor(2, 18);  display.print("HUNGER");
+  display.drawRect(50, 18, 70, 7, SSD1306_WHITE);
+  display.fillRect(52, 20, (hunger * 66) / 100, 3, SSD1306_WHITE);
+
+  // Happiness Meter
+  display.setCursor(2, 32);  display.print("HAPPY");
+  display.drawRect(50, 32, 70, 7, SSD1306_WHITE);
+  display.fillRect(52, 34, (happiness * 66) / 100, 3, SSD1306_WHITE);
+
+  // Energy Discharge Meter
+  display.setCursor(2, 46);  display.print("ENERGY");
+  display.drawRect(50, 46, 70, 7, SSD1306_WHITE);
+  display.fillRect(52, 48, (energy * 66) / 100, 3, SSD1306_WHITE);
 }
