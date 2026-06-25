@@ -21,6 +21,8 @@ Super smol tamagotchi pet for you!
 
 
 # Printed Circuit Board (PCB)
+<img width="982" height="746" alt="Screenshot 2026-06-25 202214" src="https://github.com/user-attachments/assets/c77addca-64c1-4212-a41f-e1f42d21dba9" />
+
 <img width="938" height="1119" alt="Screenshot 2026-06-25 175817" src="https://github.com/user-attachments/assets/89f8a3b3-8824-4689-90b8-ac6bcd631b77" />
 <img width="765" height="1226" alt="Screenshot 2026-06-23 164353" src="https://github.com/user-attachments/assets/5531e6e4-834f-4e68-bdf5-7c9793a11cb0" />
 
