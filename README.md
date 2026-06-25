@@ -65,21 +65,38 @@ Super smol tamagotchi pet for you!
 8. Custom 3D Printed Case
 
 # How to Build it?
+## 1. Project Files and Parts
+Download the necessary deployment files from your repository:
+* `GERBERS`: For ordering the custom PCB.
+* `3D_PRINTS`: For printing the outer case.
+* `FIRMWARE`: For the Arduino source code.
 
-**To replicate, follow the steps below:**
-1) Send the custom PCB gerbers to JLCPCB.
-2) 3D print the case enclosure using FDM.
-3) Gather all the components listed in the BOM.
-4) Solder the XIAO ESP32C3, OLED display, buttons, buzzer, and rotary encoder onto the custom PCB.
-5) Flash the provided `firmware.ino` using the Arduino IDE.
-6) Assemble the PCB into the 3D printed shell.
-7) Power it on and start taking care of Luna!
+Gather the hardware components: ESP32-C3 Supermini, 0.96-inch I2C OLED display, three 6mm tactile switches, a buzzer, and a battery cell.
 
-## Firmware setup
- - Connect your XIAO ESP32C3 to your computer.
- - Install the **ESP32 Board Package** in the Arduino IDE and select `XIAO_ESP32C3`.
- - Install the **Adafruit GFX** and **Adafruit SSD1306** libraries via the Library Manager.
- - Compile and upload `firmware.ino` to the board.
+## 2. Hardware Assembly
+1. Solder the ESP32-C3 Supermini onto the designated footprint on your custom PCB.
+2. Solder the three tactile switches into positions SW4, SW5, and SW6.
+3. Solder the OLED display into the U2 slot.
+4. Solder the buzzer to the BZ1 pads.
+5. Solder the battery wires to the BT1 power pads. Double-check your schematic to ensure positive (+) and negative (-) match exactly to prevent shorting out the board.
+6. Align and place the completed PCB into the 3D-printed bottom shell. Leave the top shell off until the firmware is successfully tested.
+
+## 3. Software Environment Setup
+1. Download and install the Arduino IDE.
+2. Go to File > Preferences, and add the official ESP32 library URL to the Additional Boards Manager URLs box.
+3. Open Tools > Board > Boards Manager, search for `esp32` by Expressif, and click install.
+4. Go back to Tools > Board > ESP32 Arduino and select `ESP32C3 Dev Module`.
+
+## 4. Library Installation and Flashing
+1. Navigate to Sketch > Include Library > Manage Libraries.
+2. Search for `Adafruit SSD1306` and click install. Select "Install All" to automatically include the required `Adafruit GFX` dependency.
+3. Open your project firmware file in the IDE.
+4. Connect the device to your computer via a USB-C data cable.
+5. Select your device's connection port under Tools > Port.
+6. Click the Upload button. The OLED screen will boot up with the system text as soon as the terminal finishes writing the code.
+
+
+
  
 <h1>Inspirations & Credits</h1> 
 Huge thanks to the <strong>Fallout Hack Club Tamagotchi guide</strong> for the base inspiration and logic outline.
