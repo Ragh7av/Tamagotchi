@@ -1,6 +1,3 @@
-
- 
- 
  <h1 align="center">Tamagotchi</h1>
  <img width="1175" height="648" alt="Screenshot 2026-06-23 235815" src="https://github.com/user-attachments/assets/d0b50554-49d4-47b8-b4b8-e9aa9b47dddf" />
 
