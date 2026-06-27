@@ -50,7 +50,7 @@ Super smol tamagotchi pet for you!
 
 **Feeding:** Fills the hunger meter (much like a crunchy kfc) with sound effects
 
-**Playing:**Yooo... Pauses the normal world to launch the falling-item arcade game. Catching items makes the pet superrrr happy but sadlyy acts as a 20% battery tax on its energy.
+**Playing:** Yooo... Pauses the normal world to launch the falling-item arcade game. Catching items makes the pet superrrr happy but sadlyy acts as a 20% battery tax on its energy.
 
 **Sleeping:** Dims the screen into a snoozee/ sleeping mode, locking the controls until its energy battery safely recharges back to 100% and get's into full powerr.
 
