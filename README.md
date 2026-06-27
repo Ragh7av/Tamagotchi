@@ -51,11 +51,11 @@ Super smol tamagotchi pet for you!
 </div>
 
 
-**Feeding:** Instantly fills the hunger meter and plays a quick "crunch" sound.
+**Feeding:** Fills the hunger meter (much like a crunchy kfc) with sound effects
 
-**Playing:** Pauses the normal world to launch the falling-item arcade game. Catching items makes the pet happy but acts as a 20% battery tax on its energy.
+**Playing:**Yooo... Pauses the normal world to launch the falling-item arcade game. Catching items makes the pet superrrr happy but sadlyy acts as a 20% battery tax on its energy.
 
-**Sleeping:** Dims the screen into a snooze mode, locking the controls until its energy battery safely recharges back to 100%.
+**Sleeping:** Dims the screen into a snoozee/ sleeping mode, locking the controls until its energy battery safely recharges back to 100% and get's into full powerr.
 
 # The Components Used
 
@@ -74,28 +74,28 @@ Download the necessary files from this repository:
 * 3D Prints: For printing the outer case.
 * Firmware: For the Arduino source code.
 
-Gather the hardware components: ESP32-C3 Supermini, 0.96-inch I2C OLED display, three 6mm tactile switches, a buzzer, and a battery cell.
+Collect and grab all the hardware components: ESP32-C3 Supermini, 0.96-inch I2C OLED display, three 6mm tactile switches, a buzzer, and a battery cell.
 
 ## 2. Hardware Assembly
 1. Solder the ESP32-C3 Supermini onto the designated footprint on your PCB.
 2. Solder the three tactile switches into positions SW4, SW5, and SW6.
 3. Solder the OLED display into the U2 slot.
 4. Solder the buzzer to the BZ1 pads.
-5. Solder the battery wires to the BT1 power pads. **Double-check your schematic to ensure positive (+) and negative (-) match exactly to prevent shorting out the board.**
-6. Align and place the completed PCB into the 3D-printed bottom shell. Leave the top shell off until the firmware is successfully tested.
+5. Solder the battery wires to the BT1 power pads. **Make sure to Double-check the schematic to ensure positive (+) and negative (-) match exactly to prevent shorting out the board.**
+6. Align and place the completed PCB into the 3D-printed bottom shell Leaving the top shell off until the firmware is successfully tested.
 
 ## 3. Software Environment Setup
 1. Download and install the Arduino IDE.
 2. Go to File --> Preferences, and add the official ESP32 library URL to the Additional Boards Manager URLs box.
 3. Open Tools --> Board --> Boards Manager, search for esp32 by Expressif, and click install.
-4. Go back to Tools --> Board --> ESP32 Arduino and select ESP32C3 Dev Module.
+4. Go back to Tools --> Board --> ESP32 Arduino and select ESP32 C3 Dev Module.
 
 ## 4. Library Installation and Flashing
-1. Navigate to Sketch -------> Include Library -----> Manage Libraries.
+1. Go to Sketch -------> Include Library -----> Manage Libraries.
 2. Search for Adafruit SSD1306 and click install. Select "Install All" to automatically include the required Adafruit GFX dependency.
 3. Open your project firmware file in Arduino IDE.
 4. Connect the device to your computer by using a data cable.
-5. Select your device's connection port under Tools > Port.
+5. Select device's connection port under Tools --> Port.
 6. Click the Upload button. The OLED screen will boot up with the system text as soon as the terminal finishes writing the code.
 
 *Hurrahhhhhhhhhhh!!! You finally replicated Tamagotchi*
