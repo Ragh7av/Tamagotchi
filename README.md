@@ -74,8 +74,7 @@ Download the necessary files from this repository:
 * 3D Prints: For printing the outer case.
 * Firmware: For the Arduino source code.
 
-Now collect all the hardware components. You will need an ESP32-C3 Supermini, a 0.96-inch I2C OLED display, three 6mm tactile switches, a buzzer and a battery cell. Make sure you have all these components before proceeding.
-
+Now collect all the hardware components. You will need an ESP32-C3 Supermini, a 0.96-inch I2C OLED display, three 6mm tactile switches, a buzzer and a battery cell.
 ## 2. Hardware Assembly
 
 To assemble the hardware follow these steps:
@@ -84,7 +83,7 @@ To assemble the hardware follow these steps:
 3. Then solder the OLED display into the U2 slot.
 4. After that solder the buzzer to the BZ1 pads.
 5. Solder the battery wires to the BT1 power pads. It is very important to check the schematic to ensure the positive and negative match exactly to prevent shorting out the ESP32-C3 Supermini board.
-6. Finally,. Place the completed PCB into the 3D-printed bottom shell but leave the top shell off until the firmware is successfully tested.
+6. Finally, Place the PCB in the 3D printed bottom case and screw it to the case.
 
 ## 3. Software Environment Setup
 
