@@ -89,10 +89,10 @@ To assemble the hardware follow these steps:
 
 To set up the software environment follow these steps:
 
-1.. Install the Arduino IDE on your computer.
-2. Go to File then Preferences. Add the official ESP32 library URL to the Additional Boards Manager URLs box.
-3. Open Tools, Board then Boards Manager, search for ESP32 by Expressif and click install.
-4. Go back to Tools, Board, then ESP32 Arduino and select ESP32 C3 Dev Module.
+1. Install the Arduino IDE on your computer.
+3. Go to File then Preferences. Add the official ESP32 library URL to the Additional Boards Manager URLs box.
+5. Open Tools, Board then Boards Manager, search for ESP32 by Expressif and click install.
+6. Go back to Tools, Board, then ESP32 Arduino and select ESP32 C3 Dev Module.
 
 ## 4. Library Installation and Flashing
 
