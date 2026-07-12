@@ -1,5 +1,6 @@
  <h1 align="center">Tamagotchi</h1>
-<img width="1195" height="972" alt="Screenshot 2026-06-27 121404" src="https://github.com/user-attachments/assets/bc9fceba-0fde-4f64-a742-b9b30ff56f0e" />
+<img width="975" height="792" alt="Screenshot 2026-07-12 125353" src="https://github.com/user-attachments/assets/b3499910-e485-42ee-baf6-d7e3c694b317" />
+
 
 
 
@@ -28,10 +29,9 @@ Super smol tamagotchi pet for you!
 <img width="765" height="1226" alt="Screenshot 2026-06-23 164353" src="https://github.com/user-attachments/assets/5531e6e4-834f-4e68-bdf5-7c9793a11cb0" />
 
 # 3D MODEL OF ASSEMBLY
-<img width="1175" height="648" alt="Screenshot 2026-06-23 235815" src="https://github.com/user-attachments/assets/8c2e6c43-a40e-44c3-98a0-bffa34876ad0" />
-<img width="1155" height="748" alt="Screenshot 2026-06-23 235724" src="https://github.com/user-attachments/assets/12c7a8a6-53df-46d8-b238-f051e6bc723e" />
-<img width="1192" height="1034" alt="Screenshot 2026-06-23 234828" src="https://github.com/user-attachments/assets/d846138c-035a-4c91-a216-5f8685018b35" />
-<img width="1157" height="751" alt="Screenshot 2026-06-23 235446" src="https://github.com/user-attachments/assets/beb4017c-5b29-4b6a-a178-0c389ba30161" />
+<img width="722" height="766" alt="Screenshot 2026-07-12 125339" src="https://github.com/user-attachments/assets/bb231f3f-d13f-480b-9f8d-6782c62b9be4" />
+<img width="1219" height="704" alt="Screenshot 2026-07-12 125330" src="https://github.com/user-attachments/assets/dd924102-c84b-4ad5-83d6-19dfb915c502" />
+<img width="1407" height="813" alt="Screenshot 2026-07-12 125319" src="https://github.com/user-attachments/assets/aba39e52-7dcf-4cf1-88af-defe1f3e6fe1" />
 
 # ZINE
 
